@@ -6,13 +6,13 @@
 
 ---
 
-## 📌 Executive Overview
+## Executive Overview
 
 This project engineers an end-to-end automated direct mail offer building, address cleansing, and player tagging analytics pipeline for **Seminole Hard Rock Hotel & Casino Hollywood (The Guitar Hotel)**. Utilizing a synthetic dataset of 50,000 player records generated via Python, the solution processes raw Casino Market Place (CMP) extracts through Google BigQuery SQL views to standardize mailing addresses, apply National Change of Address (NCOA) suppression rules, assign dynamic Q3 gaming and hotel stay promotional offers based on Average Daily Theoretical Win (ADT), and generate executive campaign yield reports.
 
 ---
 
-## 🎯 Alignment with Database Marketing Analyst Responsibilities
+## Alignment with Database Marketing Analyst Responsibilities
 
 | Database Marketing Analyst Job Description Requirement | Project Deliverable & Implementation Mapping |
 | :--- | :--- |
@@ -24,7 +24,7 @@ This project engineers an end-to-end automated direct mail offer building, addre
 
 ---
 
-## 🏗️ Technical Architecture & Pipeline Flow
+## Technical Architecture & Pipeline Flow
 
 
 ```
@@ -44,7 +44,7 @@ This project engineers an end-to-end automated direct mail offer building, addre
 
 ---
 
-## 📊 Key Campaign Performance Indicators (KPIs)
+## Key Campaign Performance Indicators (KPIs)
 
 * **Total Database Audience:** 50,000 players
 * **Mailable Audience (Passed NCOA/CASS Checks):** 48,761 players (97.52%)
