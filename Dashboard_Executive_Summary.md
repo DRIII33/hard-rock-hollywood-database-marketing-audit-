@@ -1,44 +1,133 @@
-# DASHBOARD EXECUTIVE SUMMARY: Q3 CAMPAIGN COMMAND CENTER
+# LOOKER STUDIO DASHBOARD BUILD SPECIFICATION & EXECUTIVE SUMMARY
 
-**Dashboard Name:** Seminole Hard Rock Hollywood - Q3 Direct Mail & Offer Tagging Command Center  
-**Platform:** Looker Studio (Direct BigQuery Engine Connection)  
-**Data Source:** `driiiportfolio.hard_rock_marketing.vw_cmp_q3_offer_tags`  
-
----
-
-## Dashboard Architecture & Layout
-
-The Looker Studio reporting suite is structured into three executive view modules:
-
-
-```
-
-+-----------------------------------------------------------------------------------+
-| MODULE 1: EXECUTIVE KPI SCORECARDS                                                |
-| [ Total Players: 50,000 ] [ Mailable: 47,500 (95%) ] [ Reinvestment: $4,825,000 ] |
-+-----------------------------------------------------------------------------------+
-| MODULE 2: OFFER TIER DISTRIBUTION            | MODULE 3: GEOGRAPHIC DENSITY      |
-| - Guitar VIP Lux: 1,850 Players ($925k)       | - Top Zip: 33021 (Hollywood)      |
-| - Oasis Suite: 6,200 Players ($1.24M)        | - Top Zip: 33314 (Davie/Hollyw.)  |
-| - Boardwalk FreePlay: 14,100 Players ($1.41M)| - Suppressed Heatmap: Broward Cty |
-| - General Gaming: 25,350 Players ($633k)     |                                   |
-+-----------------------------------------------------------------------------------+
-
-```
+**Dashboard Title:** Guitar Hotel Q3 Direct Mail Offer Building & Player Tagging Command Center  
+**Data Source:** Google BigQuery (`driiiportfolio.hard_rock_marketing.vw_q3_direct_mail_offers`)  
+**Target Audience:** VP of Marketing, Director of Database Marketing, Executive Casino Hosts  
 
 ---
 
-## Key Insights Rendered
+## GLOBAL CANVAS & THEME CONFIGURATION
 
-1. **High-Value Concentration:** 1,850 players (3.7% of database) qualify for `OFFER_GUITAR_VIP_LUX` ($750+ ADT), driving 19.2% of total promotional reinvestment value ($925,000).
-2. **Geographic Core:** 68% of mailable active players reside within a 25-mile radius of the Hollywood reservation (Broward and Palm Beach counties).
-3. **Data Quality Health:** The 5.0% suppression rate is isolated primarily to legacy Classic cardholders, preserving 99.1% mailability among Platinum and Multi-Platinum VIP tiers.
+* **Canvas Size:** Responsive Header with Fixed Aspect Ratio (16:9 Landscape - 1920 x 1080 px per page).
+* **Color Palette:** Premium Casino Theme (Background: `#0F1117` Dark Slate; Primary Accent: `#D4AF37` Hard Rock Gold; Secondary Accent: `#7B2CBF` Luxury Purple; Alert Neutral: `#FF4D4D` Crimson; Card Panels: `#1A1D26`).
+* **Font Family:** Montserrat / Roboto (Clean Sans-Serif).
+* **Page-Level Filters (Applied Global Controls):**
+  1. **Control Type:** Dropdown List | **Dimension:** `cmp_card_tier` | **Label:** "Select Card Tier"
+  2. **Control Type:** Dropdown List | **Dimension:** `city` | **Label:** "Select Player Market"
+  3. **Control Type:** Fixed Range Slider | **Dimension:** `q2_adt_amount` | **Label:** "Filter by ADT ($)"
 
 ---
 
-## Operational User Instructions
+## PAGE 1: CAMPAIGN OVERVIEW & EXECUTIVE REINVESTMENT
 
-* **Direct Mail Vendor Export:** Filter dashboard by `mail_deliverability_status = 'MAILABLE'` and click `Export to CSV` to generate the print vendor manifest.
-* **CMP Offer Loading:** Filter by `q3_assigned_offer_tag` to export individual player list batches for CMP tag uploading.
+### Page Header Title
+**GUITAR HOTEL Q3 DIRECT MAIL CAMPAIGN REINVESTMENT COMMAND CENTER**
 
-```
+### Widget 1.1: Total Database Audience Scorecard
+* **Chart Type:** Scorecard
+* **Chart Title:** Total Database Players
+* **Setup Panel:** Dimension: None | Metric: `player_id` (Aggregation: `COUNT DISTINCT`) | Data Type: Numeric Number
+* **Style Panel:** Compact Numbers: True | Font Size: 36pt | Label Color: `#A0AABF` | Value Color: `#FFFFFF` | Card Background: `#1A1D26`
+* **Caption:** Represents the total underlying player universe extracted from Casino Market Place for Q3 segmentation.
+
+### Widget 1.2: Total Mailable Audience Scorecard
+* **Chart Type:** Scorecard
+* **Chart Title:** Mailable Players
+* **Setup Panel:** Metric: `player_id` (Aggregation: `COUNT DISTINCT`, Filter: `mail_deliverability_status = 'MAILABLE'`) | Data Type: Numeric Number
+* **Style Panel:** Font Size: 36pt | Value Color: `#D4AF37` (Gold) | Card Background: `#1A1D26`
+* **Caption:** Displays valid player accounts passing all NCOA postal address hygiene checks.
+
+### Widget 1.3: Suppressed Unmailable Audience Scorecard
+* **Chart Type:** Scorecard
+* **Chart Title:** Suppressed Players (Bad Addr)
+* **Setup Panel:** Metric: `player_id` (Aggregation: `COUNT DISTINCT`, Filter: `mail_deliverability_status = 'SUPPRESS_UNMAILABLE'`) | Data Type: Numeric Number
+* **Style Panel:** Font Size: 36pt | Value Color: `#FF4D4D` (Crimson) | Card Background: `#1A1D26`
+* **Caption:** Highlights unmailable player profiles automatically suppressed to protect direct mail budget.
+
+### Widget 1.4: Total Offer Reinvestment Budget Scorecard
+* **Chart Type:** Scorecard
+* **Chart Title:** Direct Mail Reinvestment Budget
+* **Setup Panel:** Metric: `offer_face_value_amount` (Aggregation: `SUM`) | Data Type: Currency ($ USD)
+* **Style Panel:** Font Size: 36pt | Value Color: `#00E676` (Emerald Green) | Card Background: `#1A1D26`
+* **Caption:** Quantifies total financial commitment for Q3 Free Play and luxury stay promotional offers.
+
+### Widget 1.5: Direct Mail Cost Avoidance Scorecard
+* **Chart Type:** Scorecard
+* **Chart Title:** Direct Mail Waste Cost Avoidance
+* **Setup Panel:** Calculated Field: `SUM(CASE WHEN mail_deliverability_status = 'SUPPRESS_UNMAILABLE' THEN 5.00 ELSE 0 END)` | Data Type: Currency ($ USD)
+* **Style Panel:** Font Size: 36pt | Value Color: `#00E676` | Card Background: `#1A1D26`
+* **Caption:** Demonstrates immediate savings generated by suppressing corrupted mailing profiles from print vendors.
+
+### Widget 1.6: Offer Reinvestment Spend by Tag Breakdown
+* **Chart Type:** Donut Chart
+* **Chart Title:** Q3 Budget Allocation by Offer Tag
+* **Setup Panel:** Dimension: `q3_assigned_offer_tag` | Metric: `offer_face_value_amount` (Aggregation: `SUM`) | Sort: Metric `SUM` DESC
+* **Style Panel:** Hole Size: 60% | Slice Colors: Custom Gold Palette (`#D4AF37`, `#7B2CBF`, `#00E676`, `#FF9F1C`) | Show Slice Labels: Percentage
+* **Caption:** Visualizes proportional marketing spend across VIP, Suite, Free Play, and General Gaming offers.
+
+### Widget 1.7: Card Tier Player Distribution
+* **Chart Type:** Horizontal Bar Chart
+* **Chart Title:** Player Count & Total Reinvestment by Card Tier
+* **Setup Panel:** Dimension: `cmp_card_tier` | Metrics: `player_id` (`COUNT DISTINCT`), `offer_face_value_amount` (`SUM`) | Sort: Metric `SUM` DESC
+* **Style Panel:** Dual Axis Bar Chart | Bar 1 (Count): `#7B2CBF` | Line 2 (Spend): `#D4AF37` | Data Labels: True
+* **Caption:** Compares total player volume against total reinvestment dollars across loyalty card tiers.
+
+---
+
+## PAGE 2: GEOGRAPHIC MARKET & PLAYER ADT YIELD ANALYSIS
+
+### Page Header Title
+**PLAYER DEMOGRAPHICS, GEOGRAPHIC SPREAD, & GAMING THEORETICAL ANALYSIS**
+
+### Widget 2.1: Geographic Player Concentration Map
+* **Chart Type:** Filled Map (Google Maps Visual)
+* **Chart Title:** Florida Drive-Market Mailable Player Density
+* **Setup Panel:** Location Dimension: `city` | Tooltip Dimension: `city` | Metric: `player_id` (`COUNT DISTINCT`) | Zoom: South Florida Regional Focus
+* **Style Panel:** Map Style: Dark Mode | Color Scale: Gradient from Dark Slate `#1A1D26` to Gold `#D4AF37`
+* **Caption:** Maps customer geographic concentration across primary South Florida drive-market municipalities.
+
+### Widget 2.2: ADT vs. Trip Frequency Scatter Plot
+* **Chart Type:** Scatter Plot
+* **Chart Title:** Player Worth Matrix: Q2 ADT ($) vs. Q2 Trip Count
+* **Setup Panel:** X-Axis Dimension: `q2_total_trips` (Aggregation: `AVG`) | Y-Axis Metric: `q2_adt_amount` (Aggregation: `AVG`) | Color Dimension: `q3_assigned_offer_tag`
+* **Style Panel:** Marker Size: 8px | Gridlines: Enabled | Logarithmic Scale Y-Axis: Enabled
+* **Caption:** Plots player value tiers to validate that high-ADT and high-frequency guests receive top-tier offers.
+
+### Widget 2.3: Reinvestment Yield Summary Table
+* **Chart Type:** Data Table with Heatmap Bars
+* **Chart Title:** Detailed Offer Tag Financial Yield Breakdown
+* **Setup Panel:** Dimensions: `q3_assigned_offer_tag`, `offer_description` | Metrics: `player_id` (`COUNT DISTINCT`), `q2_adt_amount` (`AVG`), `q2_total_coin_in` (`SUM`), `offer_face_value_amount` (`SUM`) | Sort: `offer_face_value_amount` DESC
+* **Style Panel:** Table Header Fill: `#1A1D26` | Heatmap Color: Green Gradient for Reinvestment Spend | Number Formatting: Currency ($) and Integer
+* **Caption:** Outlines exact player counts, average theoretical win, total coin-in, and budget spend per offer tag.
+
+---
+
+## PAGE 3: DATA QUALITY AUDIT & ADDRESS HYGIENE GOVERNANCE
+
+### Page Header Title
+**DATA QUALITY CONTROL, NCOA HYGIENE, & HOST ACTION REPORT**
+
+### Widget 3.1: Mailability Status by Card Tier Stacked Bar Chart
+* **Chart Type:** 100% Stacked Bar Chart
+* **Chart Title:** Address Deliverability Rate across Loyalty Tiers
+* **Setup Panel:** Dimension: `cmp_card_tier` | Breakdown Dimension: `mail_deliverability_status` | Metric: `player_id` (`COUNT DISTINCT`) | Sort: `cmp_card_tier` ASC
+* **Style Panel:** Stacked Bar Colors: `MAILABLE` (`#00E676`), `SUPPRESS_UNMAILABLE` (`#FF4D4D`) | Show Data Labels: Percentage
+* **Caption:** Graphically illustrates the uniform deliverability rate (~97.5%) across all loyalty card tiers.
+
+### Widget 3.2: Chi-Square Independence Test Summary Panel
+* **Chart Type:** Custom Text Box & Data Scorecard Composite
+* **Chart Title:** Chi-Square Statistical Test Audit Result ($\chi^2$)
+* **Setup Panel:** Custom Text Cards displaying static statistical execution metrics:
+  * Metric Card 1: $\chi^2$ Statistic = `1.3277`
+  * Metric Card 2: Degrees of Freedom ($dof$) = `3`
+  * Metric Card 3: $p$-value = `0.7226`
+  * Metric Card 4: Audit Result = `PASS (Unbiased Distribution)`
+* **Style Panel:** Border Accent: Emerald Green `#00E676` | Font Family: Roboto Mono
+* **Caption:** Confirms that mailing address corruption occurs randomly without statistically significant VIP bias.
+
+### Widget 3.3: Suppressed High-Value Player Host Remediation Table
+* **Chart Type:** Data Table
+* **Chart Title:** Suppressed VIP Player Remediation List (Host Action Required)
+* **Setup Panel:** Filter: `mail_deliverability_status = 'SUPPRESS_UNMAILABLE' AND cmp_card_tier IN ('Platinum', 'Multi-Platinum')` | Dimensions: `player_id`, `last_name`, `first_name`, `cmp_card_tier`, `q2_adt_amount`, `city`, `zip_code_5digit` | Sort: `q2_adt_amount` DESC
+* **Style Panel:** Row Highlight: `#FF4D4D` (Soft Red) for immediate host attention | Page Size: 10 Rows
+* **Caption:** Isolates top-tier suppressed guests requiring manual phone contact and address updating by Casino Hosts.
