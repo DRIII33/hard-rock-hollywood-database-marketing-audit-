@@ -1,29 +1,26 @@
 # Guitar Hotel Q3 Direct Mail Offer Building & Player Tagging Automation Audit
-**Entity:** Seminole Hard Rock Hotel & Casino Hollywood  
-**Department:** Advertising & Promotions  
-**Target Role:** Database Marketing Analyst (Requisition ID: R11492)  
+
 **Author:** Daniel Rodriguez III  
-**BigQuery Project ID:** `driiiportfolio`  
+**Target Role:** Database Marketing Analyst (Requisition ID: R11492)  
+**Primary Tech Stack:** Google BigQuery (`driiiportfolio`), Python (Google Colab, SciPy, Pandas), Looker Studio, Git/GitHub  
 
-## Project Overview
-This repository contains an end-to-end database marketing automation and data quality audit project engineered for Seminole Hard Rock Hotel & Casino Hollywood. The project addresses data quality issues in legacy player management databases (CMP/GHS/TIS), automates offer-tier tagging based on Average Daily Theoretical Win (ADT), normalizes player addresses for direct-mail vendor fulfillment, and generates an executive reporting suite in Looker Studio.
+---
 
-## Analytical Toolchain
-* **Synthetic Data Engineering:** Python (`pandas`, `numpy`, `Faker`) executed via Google Colab.
-* **Data Warehousing & SQL Analytics:** Google BigQuery (`driiiportfolio.hard_rock_marketing`).
-* **Statistical Analysis:** Python (`scipy.stats`) for chi-square deliverability testing and ADT variance analysis.
-* **Business Intelligence:** Looker Studio interactive executive dashboard.
-* **Version Control:** GitHub repository.
+## 📌 Executive Overview
+This project engineers an end-to-end automated direct mail offer building, address cleansing, and player tagging analytics pipeline for **Seminole Hard Rock Hotel & Casino Hollywood (The Guitar Hotel)**. Utilizing a synthetic dataset of 50,000 player records generated via Python, the solution processes raw Casino Market Place (CMP) extracts through Google BigQuery SQL views to standardize mailing addresses, apply National Change of Address (NCOA) suppression rules, assign dynamic Q3 gaming and hotel stay promotional offers based on Average Daily Theoretical Win (ADT), and generate executive campaign yield reports.
 
-## Key Deliverables
-1. `Executive_Summary.md`: High-level strategic briefing for the Director of Advertising & Promotions.
-2. `Dashboard_Executive_Summary.md`: Visual and operational guide for the Looker Studio reporting suite.
-3. `Project_Disclaimer.md`: Professional portfolio disclosure and compliance statement.
-4. `/sql/`: Production-ready BigQuery DDL and DML scripts.
-5. `/notebooks/`: Executable Google Colab Python notebooks.
+---
 
-## Repository Setup & Execution Guide
-1. Run `notebooks/01_synthetic_data_generation.ipynb` to generate `cmp_raw_player_extract.csv`.
-2. Upload the CSV into Google BigQuery under dataset `driiiportfolio.hard_rock_marketing.raw_player_extract`.
-3. Execute SQL scripts in `/sql/` sequentially (`01_raw_schema.sql` -> `02_address_cleansing_view.sql` -> `03_offer_tagging_logic.sql`).
-4. Connect BigQuery view `vw_cmp_q3_offer_tags` to Looker Studio.
+## 🎯 Alignment with Database Marketing Analyst Responsibilities
+
+| Database Marketing Analyst Job Description Requirement | Project Deliverable & Implementation Mapping |
+| :--- | :--- |
+| **Database Management & SQL Querying** | Designed BigQuery DDL schemas (`01_raw_schema.sql`) with table clustering on card tier and city to optimize high-volume queries. |
+| **Direct Mail List Preparation & Data Hygiene** | Built `02_address_cleansing_view.sql` to standardize street abbreviations, resolve zero-padded zip codes, and flag invalid addresses. |
+| **CMP Offer Building & Player Tagging** | Engineered `03_offer_tagging_logic.sql` to dynamically tag player tiers with Q3 offers and suppress unmailable profiles. |
+| **Campaign Yield & Statistical Analysis** | Authored `02_statistical_analysis.py` implementing a Chi-Square test ($\chi^2 = 1.3277, p = 0.7226$) verifying error randomness across tiers. |
+| **Executive Dashboarding & Visualization** | Created `Dashboard_Executive_Summary.md` specifying a 3-page interactive Looker Studio dashboard detailing reinvestment metrics. |
+
+---
+
+## 🏗️ Technical Architecture & Pipeline Flow
